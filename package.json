@@ -131,6 +131,11 @@
         "category": "PostgreSQL"
       },
       {
+        "command": "vscode-postgres.deleteAllConnections",
+        "title": "Delete All Connections",
+        "category": "PostgreSQL"
+      },
+      {
         "command": "vscode-postgres.selectConnection",
         "title": "Select Connection",
         "category": "PostgreSQL"
