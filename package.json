@@ -112,6 +112,11 @@
     ],
     "commands": [
       {
+        "command": "vscode-postgres.addConnectionFromArgs",
+        "title": "Add Connection from Command Args",
+        "category": "PostgreSQL"
+      },
+      {
         "command": "vscode-postgres.addConnection",
         "title": "Add Connection",
         "icon": {
@@ -452,7 +457,7 @@
     "@types/vscode": "^1.57.0",
     "ts-loader": "^8.0.4",
     "typescript": "^4.3.2",
-    "webpack": "^5.38.1",
+    "webpack": "^5.64.4",
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
