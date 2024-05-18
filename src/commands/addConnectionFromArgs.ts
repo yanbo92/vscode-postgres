@@ -1,4 +1,3 @@
-// Import the necessary modules
 import * as vscode from 'vscode';
 import BaseCommand from "../common/baseCommand";
 import { PostgreSQLTreeDataProvider } from "../tree/treeProvider";
@@ -11,47 +10,47 @@ import { Global } from "../common/global";
 
 export class addConnectionFromArgsCommand extends BaseCommand {
     async run(args: Partial<IConnection>) {
-        if (!this.validateInput(args)) {
-            // If validation fails, show an error message and exit
-            vscode.window.showInformationMessage('Invalid or incomplete connection parameters. Please check your input.');
+        const errorMessage = this.validateInput(args);
+        if (errorMessage) {
+            vscode.window.showInformationMessage(`Invalid or incomplete connection parameters: ${errorMessage}`);
             return;
         }
 
         const tree = PostgreSQLTreeDataProvider.getInstance();
-
-        // Retrieve existing connections or initialize if none
         let connections = tree.context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateKey);
         if (!connections) connections = {};
 
-        const id = uuidv1(); // Generate a unique ID for the new connection
-        // Construct the connection object from provided args
+        const id = uuidv1();
         connections[id] = {
             label: args.label,
             host: args.host,
             user: args.user,
-            port: args.port || 5432, // Default port to 5432 if not provided
-            ssl: args.ssl || false,  // Default SSL to false if not provided
-            database: args.database
+            port: args.port || 5432,
+            ssl: args.ssl || false,
+            database: args.database,
+            hasPassword: !!args.password
         };
 
-        // Store password securely if provided
+        // Store password securely if provided and update the hasPassword flag accordingly
         if (args.password) {
             await Global.context.secrets.store(id, args.password);
-            connections[id].hasPassword = true;
+            connections[id].hasPassword = true; // Set hasPassword to true if password is provided
         } else {
-            connections[id].hasPassword = false;
+            connections[id].hasPassword = false; // Ensure hasPassword is false if no password is provided
         }
 
-        // Update the global state with the new connection list
         await tree.context.globalState.update(Constants.GlobalStateKey, connections);
-        tree.refresh(); // Refresh the tree view to show the new connection
+        tree.refresh();
     }
 
-    private validateInput(args: Partial<IConnection>): boolean {
-        if (!args || !args.host || !args.user || args.port === undefined || args.ssl === undefined || !args.database) {
-            return false;
-        }
-        // Add additional validations as needed
-        return true;
+    private validateInput(args: Partial<IConnection>): string | null {
+        if (!args) return "Connection arguments are missing.";
+        if (!args.host) return "Host is required.";
+        if (!args.user) return "User is required.";
+        if (args.port === undefined) return "Port is required.";
+        if (args.ssl === undefined) return "SSL setting is required.";
+        if (!args.database) return "Database name is required.";
+        if (!args.password) return "Password is required.";  // Now validating password as a required field
+        return null; // If all fields are valid
     }
 }
