@@ -12,7 +12,6 @@ export class deleteAllConnectionCommand extends BaseCommand {
     async run() {
         let connections = Global.context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateKey);
         if (!connections || Object.keys(connections).length === 0) {
-            vscode.window.showInformationMessage('No connections to delete.');
             return;
         }
 
