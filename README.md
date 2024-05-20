@@ -1,5 +1,5 @@
 # PostgreSQL
-
+## This Repo add command `addConnectionFromArgs` and `deleteAllConnection`, the `vsix` package can be found in release page.
 This is a query tool for PostgreSQL databases.  While there is a database explorer it is _NOT_ meant for creating/dropping databases or tables.  The explorer is a visual aid for helping to craft your queries.
 
 There is a language service that should keep at most a single connection open to the database (assuming one was selected).  This facilitates query diagnostics, code completion, and function signatures.  All code completion keywords, functions, tables, and field names are pulled from the current connection to try to keep everything relevant.
